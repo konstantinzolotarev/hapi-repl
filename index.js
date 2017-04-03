@@ -1,7 +1,7 @@
 'use strict'
 
 const Repl = require('repl')
-const packagejson = require('../package.json')
+const packagejson = require('./package.json')
 
 let repl
 
@@ -17,7 +17,7 @@ exports.register = function(server, options, next) {
     repl = Repl.start({
       prompt: '',
       useColors: true,
-      replMode: repl.REPL_MODE_STRICT //,
+      replMode: Repl.REPL_MODE_STRICT //,
       // historySize: this.config.historySize
     })
     repl.pause()
@@ -31,9 +31,13 @@ exports.register = function(server, options, next) {
   catch (e) {
     server.log('error', e)
     server.log('warn', 'hapi-repl: Disabling REPL.')
+    return next(e)
   }
 
-  repl.once('exit', () => {
+  repl.on('exit', () => {
+    if (typeof(server.stop) !== 'function')
+      return process.exit()
+
     server.stop().then(() => process.exit())
   })
 
