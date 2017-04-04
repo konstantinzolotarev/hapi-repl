@@ -27,6 +27,14 @@ exports.register = function(server, options, next) {
       repl.resume()
       repl.write('', { name: 'return' })
     })
+
+    server.on('stop', () => {
+      if (!process.stdout.isTTY || !repl)
+        return
+
+      repl.removeAllListeners('exit')
+      repl.close()
+    })
   }
   catch (e) {
     server.log('error', e)
