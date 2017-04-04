@@ -1,7 +1,6 @@
 'use strict'
 
 const Repl = require('repl')
-const packagejson = require('./package.json')
 
 let repl
 
@@ -42,6 +41,8 @@ exports.register = function(server, options, next) {
     return next(e)
   }
 
+  repl.context.server = server
+
   repl.on('exit', () => {
     if (typeof(server.stop) !== 'function')
       return process.exit()
@@ -49,11 +50,9 @@ exports.register = function(server, options, next) {
     server.stop().then(() => process.exit())
   })
 
-  repl.context.server = server
-
   next()
 }
 
 exports.register.attributes = {
-  pkg: packagejson
+  pkg: require('./package.json')
 }

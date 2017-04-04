@@ -1,11 +1,10 @@
 'use strict'
 
-const replPlugin = require('./index')
 const Hapi = require('hapi')
 
 // Create a server with a host and port
 const server = new Hapi.Server()
-server.connection({host: 'localhost', port: 8000})
+server.connection({ port: 8000 })
 
 // Add the route
 server.route({
@@ -17,7 +16,7 @@ server.route({
   }
 })
 
-server.register([replPlugin], (err) => {
+server.register(require('../index'), (err) => {
 
   if (err)
     throw err
@@ -28,6 +27,5 @@ server.register([replPlugin], (err) => {
     if (err) {
       throw err
     }
-
   })
 })
